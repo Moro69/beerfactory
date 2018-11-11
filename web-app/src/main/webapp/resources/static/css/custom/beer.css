@@ -1,0 +1,7 @@
+.form-group input, .form-group textarea {
+    width: 40%;
+}
+
+.card-body {
+    text-align: left;
+}

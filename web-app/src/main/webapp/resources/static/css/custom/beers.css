@@ -1,0 +1,51 @@
+.btn.btn-link {
+    font-size: 20px;
+    color: #308bff;
+}
+
+.footer{
+    background-color: #e9ecef;
+}
+
+.editing{
+    float: right;
+    margin: 5px 0 5px 0;
+}
+.editing a {
+    font-size: 25px !important;
+    color: black;
+    margin-right: 10px;
+}
+
+.review .btn.btn-secondary {
+    float: left;
+    color: black;
+    background-color: white;
+    margin: 10px 0 0 20px;
+    padding: 0 10px;
+}
+
+.review .btn.btn-secondary:hover {
+    background-color: #308bff;
+    color: white;
+}
+
+.card-body img {
+    width: 150px;
+    height: 200px;
+    float: left;
+    position: relative;
+    border: 1px solid;
+    border-color: #e9ecef;
+    margin-bottom: 20px;
+}
+.card-body ul {
+    float: left;
+    width: 85%;
+    list-style: none;
+}
+.card-body ul li {
+    text-align: left;
+    position: relative;
+    word-wrap: normal;
+}

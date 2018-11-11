@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:ws="http://jax-ws.dev.java.net/spring/core"
+       xmlns:wss="http://jax-ws.dev.java.net/spring/servlet"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd
+      http://jax-ws.dev.java.net/spring/core
+       http://jax-ws.java.net/spring/core.xsd
+       http://jax-ws.dev.java.net/spring/servlet
+       http://jax-ws.java.net/spring/servlet.xsd">
+
+
+    <import resource="classpath*:test-db-spring.xml"/>
+    <!-- Component scan for @Controller, @Service... annotations -->
+    <context:component-scan base-package="com.moro.*"/>
+
+    <wss:binding url="/beerfactory/beers">
+        <wss:service>
+            <ws:service bean="#beerEndpoint"/>
+        </wss:service>
+    </wss:binding>
+
+    <wss:binding url="/beerfactory/orders">
+        <wss:service>
+            <ws:service bean="#orderEndpoint"/>
+        </wss:service>
+    </wss:binding>
+
+    <wss:binding url="/beerfactory/beers/review">
+        <wss:service>
+            <ws:service bean="#reviewEndpoint"/>
+        </wss:service>
+    </wss:binding>
+
+    <bean id="beerEndpoint" class="com.moro.soap.implementation.BeerEndpointImpl">
+        <property name="beerService" ref="beerService"/>
+    </bean>
+
+    <bean id="orderEndpoint" class="com.moro.soap.implementation.OrderEndpointImpl">
+        <property name="orderService" ref="orderService"/>
+    </bean>
+
+    <bean id="reviewEndpoint" class="com.moro.soap.implementation.ReviewEndpointImpl">
+        <property name="reviewService" ref="reviewService"/>
+    </bean>
+
+    <bean id="namedParameterJdbcTemplate"
+          class="org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate">
+        <constructor-arg name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <bean id="beerRowMapper" class="com.moro.dao.implementation.BeerDaoImpl$BeerRowMapper"/>
+
+    <bean id="beerDao" class="com.moro.dao.implementation.BeerDaoImpl">
+        <constructor-arg name="namedParameterJdbcTemplate" ref="namedParameterJdbcTemplate"/>
+        <constructor-arg name="rowMapper" ref="beerRowMapper"/>
+    </bean>
+
+    <bean id="beerService" class="com.moro.dbService.BeerDbServiceImpl">
+        <constructor-arg ref="beerDao"/>
+    </bean>
+
+    <bean id="orderDao" class="com.moro.dao.implementation.OrderDaoImpl">
+        <constructor-arg ref="namedParameterJdbcTemplate"/>
+    </bean>
+
+    <bean id="orderService" class="com.moro.dbService.OrderDbServiceImpl">
+        <constructor-arg ref="orderDao"/>
+    </bean>
+
+    <bean id="reviewDao" class="com.moro.dao.implementation.ReviewDaoImpl">
+        <property name="namedParameterJdbcTemplate" ref="namedParameterJdbcTemplate"/>
+    </bean>
+    <bean id="reviewService" class="com.moro.dbService.ReviewDbServiceImpl">
+        <constructor-arg ref="reviewDao"/>
+    </bean>
+
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+                <value>classpath:sql.properties</value>
+            </list>
+        </property>
+        <property name="ignoreUnresolvablePlaceholders" value="true"/>
+    </bean>
+</beans>

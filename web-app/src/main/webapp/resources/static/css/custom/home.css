@@ -1,0 +1,38 @@
+
+/* Custom default button */
+.btn-secondary,
+.btn-secondary:focus {
+    color: #040505;
+    text-shadow: none; /* Prevent inheritance from `body` */
+    background-color: #dadada;
+	border-radius: 8px;
+	border: 1px solid #040505;
+    box-shadow:  2px 10px 12px -2px rgba(0,0,0);
+    width: 200px;
+}
+.btn-secondary:hover {
+    background-color: #308bff;
+    color: white;
+}
+
+.cover-heading {
+    font-size: 70px;
+    margin-bottom: 70px;
+}
+
+/*
+ * Footer
+ */
+.mastfoot {
+    font-size: 20px;
+}
+
+.mastfoot a {
+    color: #000000;
+    font-size: 25px;
+    padding: 4px;
+}
+
+.mastfoot a:hover {
+    color: #308bff;
+}

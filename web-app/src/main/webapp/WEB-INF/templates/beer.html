@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title th:text="${isNew} ? 'New beer' : 'Edit beer'">Beer</title>
+
+    <link rel="icon" href="../../resources/static/favicon/favicon.ico"
+          th:href="@{/resources/static/favicon/favicon.ico}">
+    <link href="https://fonts.googleapis.com/css?family=Abel" rel="stylesheet">
+    <link rel="stylesheet"
+          href="../../resources/static/css/font-awesome.min.css"
+          th:href="@{/resources/static/css/font-awesome.min.css}">
+
+
+    <!-- Bootstrap core CSS -->
+    <link href="../../resources/static/css/bootstrap.min.css"
+          th:href="@{/resources/static/css/bootstrap.min.css}"
+          rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="../../resources/static/css/custom/beerfactory.css"
+          th:href="@{/resources/static/css/custom/beerfactory.css}"
+          rel="stylesheet">
+
+    <link href="../../resources/static/css/custom/beer.css"
+          th:href="@{/resources/static/css/custom/beer.css}"
+          rel="stylesheet">
+
+</head>
+
+<body class="text-center">
+
+<div class="cover-container d-flex p-2 mx-auto flex-column">
+    <header class="masthead mb-auto">
+        <div class="inner">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="beerfactory.html" th:href="@{/beerfactory}">Home</a></li>
+                    <li class="breadcrumb-item"><a href="beers.html" th:href="@{/beerfactory/beers}">Beers</a></li>
+                    <li class="breadcrumb-item"><a href="orders.html" th:href="@{/beerfactory/orders}">Orders</a></li>
+                </ol>
+            </nav>
+        </div>
+        <nav id="main-header" class="py-1 mb-3 navbar navbar-expand-sm navbar-dark">
+            <ul class="navbar-nav float-left">
+                <li class="nav-item">
+                    <a href="beers.html"
+                       th:href="@{/beerfactory/beers}"
+                       title="Back"
+                       data-toggle="tooltip"
+                       data-placement="bottom">
+                        <i class="fa fa-arrow-left" style="color:black;margin-bottom: 10px;"></i>
+                        <span class="d-none d-sm-inline"></span>
+                    </a>
+                </li>
+            </ul>
+            <span class="navbar-brand mr-auto" style="color: black;margin-left: 10px;"
+                  th:text="${isNew} ? 'New beer' : 'Edit beer'">Beer</span>
+        </nav>
+    </header>
+
+    <section id="beer">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col">
+                    <div class="card">
+                        <div class="card-body">
+                            <form id="beerForm"
+                                  th:object="${beer}"
+                                  action="beers.html"
+                                  th:action="@{${#httpServletRequest.servletPath}}"
+                                  th:method="@{post}"
+                                  enctype="multipart/form-data">
+                                <input id="field_beerId"
+                                       name=""
+                                       type="hidden"
+                                       th:field="*{beerId}"/>
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label class="form-control-label"
+                                               for="field_beerTitle">
+                                            Title
+                                        </label>
+                                        <input class="form-control"
+                                               id="field_beerTitle"
+                                               type="text"
+                                               th:field="*{beerTitle}"
+                                               placeholder="Enter the beer title"
+                                               style="width: 80.5%;">
+                                        <p style="color:#fe313b;"
+                                           th:if="${#fields.hasErrors('beerTitle')}"
+                                           th:errors="*{beerTitle}"></p>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="beerImg">Choose beer image</label>
+                                        <input type="file" class="form-control-file" id="beerImg" name="image">
+                                        <p style="color:#fe313b;"
+                                           th:text="${errorMessage} == null ? '' : ${errorMessage}"></p>
+                                    </div>
+
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-control-label"
+                                           for="field_beerAbv">
+                                        Abv %
+                                    </label>
+                                    <input class="form-control"
+                                           id="field_beerAbv"
+                                           type="text"
+                                           th:field="*{beerAbv}"
+                                           placeholder="Enter the beer abv">
+                                    <p style="color:#fe313b;"
+                                       th:if="${#fields.hasErrors('beerAbv')}"
+                                       th:errors="*{beerAbv}"></p>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-control-label"
+                                           for="field_description">
+                                        Description
+                                    </label>
+                                    <textarea class="form-control"
+                                              id="field_description"
+                                              rows="3"
+                                              th:field="*{description}"
+                                              placeholder="Enter the beer description"></textarea>
+                                    <p style="color:#fe313b;"
+                                       th:if="${#fields.hasErrors('description')}"
+                                       th:errors="*{description}"></p>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-control-label"
+                                           for="field_beerPrice">
+                                        Price
+                                    </label>
+                                    <input class="form-control"
+                                           id="field_beerPrice"
+                                           type="text"
+                                           th:field="*{price}"
+                                           placeholder="Enter the beer price">
+                                    <p style="color:#fe313b;"
+                                       th:if="${#fields.hasErrors('price')}"
+                                       th:errors="*{price}"></p>
+                                </div>
+
+                                <button type="submit" class="btn btn-primary"
+                                        th:href="@{/beerfactory/beers}"
+                                        th:onclick="@{document.forms['beerForm'].submit(); return false;}">Submit
+                                </button>
+                                <a href="beers.html" th:href="@{/beerfactory/beers}" class="btn btn-secondary"
+                                   role="button" aria-pressed="true">Cancel</a>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+
+<script src="../../resources/static/js/jquery.min.js"
+        th:src="@{/resources/static/js/jquery.min.js}"></script>
+<script src="../../resources/static/js/popper.min.js"
+        th:src="@{/resources/static/js/popper.min.js}"></script>
+<script src="../../resources/static/js/bootstrap.min.js"
+        th:src="@{/resources/static/js/bootstrap.min.js}"></script>
+<script>
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+    })
+</script>
+</body>
+</html>

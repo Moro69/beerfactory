@@ -1,0 +1,20 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+
+    <bean id="beerServiceMock" class="org.easymock.EasyMock" factory-method="createMock">
+        <constructor-arg value="com.moro.service.interfaces.BeerService"/>
+    </bean>
+    <bean id="reviewServiceMock" class="org.easymock.EasyMock" factory-method="createMock">
+        <constructor-arg value="com.moro.service.interfaces.ReviewService"/>
+    </bean>
+    <bean id="orderServiceMock" class="org.easymock.EasyMock" factory-method="createMock">
+        <constructor-arg value="com.moro.service.interfaces.OrderService"/>
+    </bean>
+
+    <bean id="reviewEndpointImpl" class="com.moro.soap.implementation.ReviewEndpointImpl"/>
+    <bean id="beerEndpointImpl" class="com.moro.soap.implementation.BeerEndpointImpl"/>
+    <bean id="orderEndpointImpl" class="com.moro.soap.implementation.OrderEndpointImpl"/>
+</beans>

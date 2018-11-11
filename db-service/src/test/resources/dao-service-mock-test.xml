@@ -1,0 +1,30 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                     http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+    <bean id="beerDao" class="org.easymock.EasyMock" factory-method="createMock">
+        <constructor-arg value="com.moro.dao.interfaces.BeerDao"/>
+    </bean>
+
+    <bean id="beerService" class="com.moro.dbService.BeerDbServiceImpl">
+        <constructor-arg ref="beerDao"/>
+    </bean>
+
+    <bean id="reviewDao" class="org.easymock.EasyMock" factory-method="createMock">
+        <constructor-arg value="com.moro.dao.interfaces.ReviewDao"/>
+    </bean>
+    <bean id="reviewService" class="com.moro.dbService.ReviewDbServiceImpl">
+        <constructor-arg ref="reviewDao"/>
+    </bean>
+
+    <bean id="orderDao" class="org.easymock.EasyMock" factory-method="createMock">
+        <constructor-arg value="com.moro.dao.interfaces.OrderDao"/>
+    </bean>
+
+    <bean id="orderService" class="com.moro.dbService.OrderDbServiceImpl">
+        <constructor-arg ref="orderDao"/>
+    </bean>
+
+</beans>

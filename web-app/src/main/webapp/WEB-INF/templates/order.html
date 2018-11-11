@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>New order</title>
+
+    <link rel="icon" href="../../resources/static/favicon/favicon.ico"
+          th:href="@{/resources/static/favicon/favicon.ico}">
+    <link href="https://fonts.googleapis.com/css?family=Abel" rel="stylesheet">
+    <link rel="stylesheet"
+          href="../../resources/static/css/font-awesome.min.css"
+          th:href="@{/resources/static/css/font-awesome.min.css}">
+
+
+    <!-- Bootstrap core CSS -->
+    <link href="../../resources/static/css/bootstrap.min.css"
+          th:href="@{/resources/static/css/bootstrap.min.css}"
+          rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="../../resources/static/css/custom/order.css"
+          th:href="@{/resources/static/css/custom/order.css}"
+          rel="stylesheet">
+
+    <link href="../../resources/static/css/custom/beerfactory.css"
+          th:href="@{/resources/static/css/custom/beerfactory.css}"
+          rel="stylesheet">
+</head>
+
+<body class="text-center">
+
+<div class="cover-container d-flex p-2 mx-auto flex-column">
+    <header class="masthead mb-auto">
+        <div class="inner">
+            <nav aria-label="breadcrumb" >
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="beerfactory.html" th:href="@{/beerfactory}">Home</a></li>
+                    <li class="breadcrumb-item"><a href="beers.html" th:href="@{/beerfactory/beers}">Beers</a></li>
+                    <li class="breadcrumb-item"><a href="orders.html" th:href="@{/beerfactory/orders}">Orders</a></li>
+                </ol>
+            </nav>
+        </div>
+
+        <nav id="main-header" class="py-1 mb-3 navbar navbar-expand-sm navbar-dark">
+            <ul class="navbar-nav float-left">
+                <li class="nav-item">
+                    <a href="orders.html"
+                       th:href="@{/beerfactory/orders}"
+                       title="Back"
+                       data-toggle="tooltip"
+                       data-placement="bottom">
+                        <i class="fa fa-arrow-left" style="color:black;margin-bottom: 10px;"></i>
+                        <span class="d-none d-sm-inline"></span>
+                    </a>
+                </li>
+            </ul>
+            <span class="navbar-brand mr-auto" style="color: black;margin-left: 10px;">New order</span>
+        </nav>
+    </header>
+
+    <section id="order">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col">
+                    <div class="card">
+                        <div class="card-body">
+                            <form id="orderForm"
+                                  th:object="${order}"
+                                  action="orders.html"
+                                  th:action="@{${#httpServletRequest.servletPath}}"
+                                  th:method="@{post}">
+                                <input id="field_orderId"
+                                       name=""
+                                       type="hidden"
+                                       th:field="*{orderId}"/>
+
+                                <div class="form-group">
+                                <label class="form-control-label"
+                                       for="field_beer">
+                                    Choose beer
+                                </label>
+                                <select class="form-control"
+                                        id="field_beer"
+                                        th:field="*{beerId}">
+                                    <option th:each="beer : ${beers}"
+                                            th:value="${beer.beerId}"
+                                            th:text="${beer.beerTitle}"
+                                    th:attr="data-price=${beer.beerPrice}">
+                                    </option>
+                                </select>
+                            </div>
+                                <div class="form-group">
+                                    <label class="form-control-label"
+                                           for="field_beerQuantity">
+                                        Quantity
+                                    </label>
+                                    <input class="form-control"
+                                           id="field_beerQuantity"
+                                           type="text"
+                                           oninput="getTotalPrice()"
+                                           placeholder="Enter the beer quantity"
+                                           th:field="*{beerQuantity}">
+                                    <p style="color:#fe313b;"
+                                       th:if="${#fields.hasErrors('beerQuantity')}"
+                                       th:errors="*{beerQuantity}"></p>
+                                </div>
+
+                                <div class="form-inline">
+                                    <label class="form-control-label mb-0"
+                                           for="orderPrice">
+                                        Total price:
+                                    </label>
+                                    <input class="form-control-plaintext ml-2"
+                                           id="orderPrice"
+                                           type="text"
+                                           readonly
+                                           value="132337"
+                                           th:field="*{orderPrice}">
+                                </div>
+
+                                <hr>
+
+                                <div>
+                                    <button type="submit" class="btn btn-primary"
+                                            th:href="@{/beerfactory/orders}"
+                                            th:onclick="@{document.forms['orderForm'].submit(); return false;}">Submit</button>
+                                    <a href="beers.html" th:href="@{/beerfactory/orders}" class="btn btn-secondary" role="button" aria-pressed="true">Cancel</a>
+                                </div>
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script src="../../resources/static/js/jquery.min.js"
+        th:src="@{/resources/static/js/jquery.min.js}"></script>
+<script src="../../resources/static/js/popper.min.js"
+        th:src="@{/resources/static/js/popper.min.js}"></script>
+<script src="../../resources/static/js/bootstrap.min.js"
+        th:src="@{/resources/static/js/bootstrap.min.js}"></script>
+<script>
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip()})
+</script>
+
+<script>
+    function getTotalPrice() {
+        var beer = document.getElementById("field_beer");
+        var price = beer.options[beer.selectedIndex].dataset.price;
+
+        var quantity = document.getElementById("field_beerQuantity").value;
+
+        var totalPrice = +quantity * (+price);
+
+        $('#orderPrice').val(totalPrice);
+
+        var x = $('#orderPrice').val();
+    }
+</script>
+</body>
+</html>

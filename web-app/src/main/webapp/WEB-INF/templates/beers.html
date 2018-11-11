@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Beers</title>
+    <link rel="icon" href="../../resources/static/favicon/favicon.ico"
+          th:href="@{/resources/static/favicon/favicon.ico}">
+    <link href="https://fonts.googleapis.com/css?family=Abel" rel="stylesheet">
+    <link rel="stylesheet"
+          href="../../resources/static/css/font-awesome.min.css"
+          th:href="@{/resources/static/css/font-awesome.min.css}">
+
+
+    <!-- Bootstrap core CSS -->
+    <link href="../../resources/static/css/bootstrap.min.css"
+          th:href="@{/resources/static/css/bootstrap.min.css}"
+          rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="../../resources/static/css/custom/beers.css"
+          th:href="@{/resources/static/css/custom/beers.css}"
+          rel="stylesheet">
+    <link href="../../resources/static/css/custom/beerfactory.css"
+          th:href="@{/resources/static/css/custom/beerfactory.css}"
+          rel="stylesheet">
+    <link href="../../resources/static/css/custom/rating.css"
+          th:href="@{/resources/static/css/custom/rating.css}"
+          rel="stylesheet">
+    <link href="../../resources/static/css/custom/reviewRating.css"
+          th:href="@{/resources/static/css/custom/reviewRating.css}"
+          rel="stylesheet">
+</head>
+
+<body class="text-center">
+
+    <div class="cover-container d-flex p-2 mx-auto flex-column">
+        <header class="masthead mb-auto">
+            <div class="inner">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="beerfactory.html" th:href="@{/beerfactory}">Home</a>
+                        </li>
+                        <li class="breadcrumb-item">Beers</li>
+                        <li class="breadcrumb-item">
+                            <a href="orders.html" th:href="@{/beerfactory/orders}">Orders</a>
+                        </li>
+                    </ol>
+                </nav>
+            </div>
+            <nav id="main-header" class="py-1 mb-3 navbar navbar-expand-sm navbar-dark">
+                <span class="navbar-brand mr-auto" style="color: black">Products</span>
+                <ul class="navbar-nav float-right">
+                    <li class="nav-item">
+                        <a href="beer.html"
+                           th:href="@{/beerfactory/beers/newbeer}"
+                           title="Add new beer"
+                           data-toggle="tooltip"
+                           data-placement="bottom">
+                            <i class="fa fa-plus" style="color:black"></i>
+                            <span class="d-none d-sm-inline"></span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </header>
+        <div id="accordion">
+            <div class="card" th:each="beer : ${beers}">
+                <div class="card-header" id="headingOne">
+                    <h5 class="mb-0">
+                        <button class="btn btn-link" data-toggle="collapse" data-target="#beerAcc" th:data-target="'#' + ${beer.beerId}"
+                                aria-expanded="true" aria-controls="collapseOne" th:text="${beer.beerTitle}">
+                            Beer
+                        </button>
+                    </h5>
+                </div>
+
+                <div id="beerAcc" th:id="${beer.beerId}" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+                    <div class="card-body">
+                        <img src="../../resources/static/images/default.jpg" alt=""
+                        th:src="@{|/resources/static/images/${beer.beerImage}.jpg|}">
+                        <ul>
+                            <li th:text="'About: ' + ${beer.description}">Beerly beer</li>
+                            <li th:text="'Abv: ' + ${beer.beerAbv} + '%'">5.0</li>
+                            <li th:text="'Price: ' + ${beer.beerPrice} + '$'">10</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="footer">
+                    <div class="star-rating" th:title="${beer.rating}">
+                        <div class="back-stars">
+                            <i class="fa fa-star" aria-hidden="true"></i>
+                            <i class="fa fa-star" aria-hidden="true"></i>
+                            <i class="fa fa-star" aria-hidden="true"></i>
+                            <i class="fa fa-star" aria-hidden="true"></i>
+                            <i class="fa fa-star" aria-hidden="true"></i>
+
+                            <div class="front-stars" th:style="'width: ' + ${(beer.rating / 5.0) * 100} + '%'">
+                                <i class="fa fa-star" aria-hidden="true"></i>
+                                <i class="fa fa-star" aria-hidden="true"></i>
+                                <i class="fa fa-star" aria-hidden="true"></i>
+                                <i class="fa fa-star" aria-hidden="true"></i>
+                                <i class="fa fa-star" aria-hidden="true"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="review">
+                        <button type="button" class="btn btn-secondary modal-open"
+                                data-toggle="modal" data-target="#reviewModal"
+                                th:attr="data-id=${beer.beerId}">
+                            Leave review
+                        </button>
+                    </div>
+
+                    <div class="editing">
+                        <a href="beer.html" th:href="@{|beers/edit/${beer.beerId}|}"
+                            title="Edit beer" data-toggle="tooltip" data-placement="top">
+                            <i class="fa fa-pencil"></i>
+                        </a>
+                        <span data-toggle="modal"
+                              data-target="#deleteDialog"
+                              th:attr="data-id=${beer.beerId}, data-name=${beer.beerTitle}">
+                            <a href="#" title="Delete beer" data-toggle="tooltip" data-placement="top">
+                                <i class="fa fa-trash"></i>
+                            </a>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="reviewModal" tabindex="-1" role="dialog" aria-labelledby="reviewTitle" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header alert-primary">
+                    <h5 class="modal-title" id="reviewTitle">New review</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">                    
+                    <form id="reviewForm"
+                          th:object="${review}"
+                          action="beers.html"
+                          th:action="@{/beerfactory/beers/review}"
+                          th:method="@{post}">
+                        <input id="field_reviewId"
+                               name=""
+                               type="hidden"
+                               th:field="*{reviewId}"/>
+                        <input id="field_beerId"
+                               name=""
+                               type="hidden"
+                               th:field="*{beerId}"
+                                />
+                        <div class="form-group" style="text-align: left">
+                            <label for="reviewComment" class="form-label">Your comment</label>
+                            <textarea class="form-control" id="reviewComment" th:field="*{comment}"></textarea>
+                            <p style="color:#fe313b;"
+                               th:if="${#fields.hasErrors('comment')}"
+                               th:errors="*{comment}"></p>
+                        </div>
+                        <div class="form-row" style="float:right" id="starsForm">
+                            <label for="reviewRating" class="col-form-label">Rate it:</label>
+
+                            <fieldset class="reviewRating" id="reviewRating" form="starsForm">
+                                <input type="radio" id="star5" name="rating" value="5.0" th:field="*{rating}"/>
+                                <label class = "full" for="star5" title="Awesome - 5 stars"></label>
+
+                                <input type="radio" id="star4" name="rating" value="4.0"/>
+                                <label class = "full" for="star4" title="Pretty good - 4 stars"></label>
+
+                                <input type="radio" id="star3" name="rating" value="3.0" />
+                                <label class = "full" for="star3" title="Not bad - 3 stars"></label>
+
+                                <input type="radio" id="star2" name="rating" value="2.0" />
+                                <label class = "full" for="star2" title="Kinda bad - 2 stars"></label>
+
+                                <input type="radio" id="star1" name="rating" value="1.0" />
+                                <label class = "full" for="star1" title="It sucks - 1 star"></label>
+                            </fieldset>
+                            <p style="color:#fe313b;"
+                               th:if="${#fields.hasErrors('rating')}"
+                               th:errors="*{rating}"></p>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary"
+                            th:href="@{/beerfactory/beers}"
+                            th:onclick="@{document.forms['reviewForm'].submit(); return false;}">Submit</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirm delete Modal -->
+    <div class="modal fade" id="deleteDialog" tabindex="-1" role="dialog"
+         aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header alert-danger">
+                    <h5 class="modal-title" id="exampleModalLabel">
+                        Beer deleting
+                    </h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body"></div>
+                <div class="modal-footer">
+                    <a id="deleteUrl" href="#" class="btn btn-danger">Delete</a>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../../resources/static/js/jquery.min.js"
+            th:src="@{/resources/static/js/jquery.min.js}"></script>
+    <script src="../../resources/static/js/popper.min.js"
+            th:src="@{/resources/static/js/popper.min.js}"></script>
+    <script src="../../resources/static/js/bootstrap.min.js"
+            th:src="@{/resources/static/js/bootstrap.min.js}"></script>
+    <script>
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip()})
+    </script>
+    <script>
+
+        $('#deleteDialog').on('show.bs.modal', function (event) {
+            var target = $(event.relatedTarget)
+            $(this).find('.modal-body').text('Are you sure you want to delete beer: "' + target.data('name') + '"?')
+            document.getElementById('deleteUrl').href = '/beerfactory/beers' + '/delete/' + target.data('id');
+        })
+
+        $('.modal-open').on('click', function() {
+            var target = $(this);
+
+            $('#field_beerId').val(target.data('id'));
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+.form-group input, .form-control{
+    width: 40%;
+}
+.form-control-plaintext {
+    width: 60%;
+}
+  .card-body {
+    text-align: left;
+}

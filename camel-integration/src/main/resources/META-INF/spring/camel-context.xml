@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd
+       http://camel.apache.org/schema/spring
+       http://camel.apache.org/schema/spring/camel-spring.xsd">
+
+    <import resource="classpath:META-INF/cxf/cxf.xml"/>
+    <import resource="classpath*:test-db-spring.xml"/>
+
+    <!-- Component scan for @Controller, @Service... annotations -->
+    <context:component-scan base-package="com.moro.*"/>
+
+    <bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+                <value>classpath:wsdls.properties</value>
+                <value>classpath:urlTemplates.properties</value>
+                <value>classpath:addressPrefix.properties</value>
+                <value>classpath:endpoints.properties</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="beerProcess" class="com.moro.soap.beersoapservice.BeerProcess"/>
+    <bean id="orderProcess" class="com.moro.soap.ordersoapservice.OrderProcess"/>
+    <bean id="reviewProcess" class="com.moro.soap.reviewsoapservice.ReviewProcess"/>
+
+    <bean id="endpointFactory" class="com.moro.camel.integration.factory.EndpointFactory">
+        <constructor-arg ref="beerProcess"/>
+        <constructor-arg ref="orderProcess"/>
+        <constructor-arg ref="reviewProcess"/>
+    </bean>
+
+    <bean id="direction" class="com.moro.camel.integration.mbeans.Direction"/>
+
+    <bean id="modelMapper" class="org.modelmapper.ModelMapper"/>
+    <bean id="objectMapper" class="com.fasterxml.jackson.databind.ObjectMapper"/>
+
+    <bean id="orderSoapManager" class="com.moro.camel.integration.soap.OrderSoapManager">
+        <constructor-arg ref="endpointFactory"/>
+        <constructor-arg ref="modelMapper"/>
+        <constructor-arg ref="objectMapper"/>
+    </bean>
+    <bean id="beerSoapManager" class="com.moro.camel.integration.soap.BeerSoapManager">
+        <constructor-arg ref="endpointFactory"/>
+        <constructor-arg ref="modelMapper"/>
+        <constructor-arg ref="objectMapper"/>
+    </bean>
+    <bean id="reviewSoapManager" class="com.moro.camel.integration.soap.ReviewSoapManager">
+        <constructor-arg ref="endpointFactory"/>
+        <constructor-arg ref="modelMapper"/>
+        <constructor-arg ref="objectMapper"/>
+    </bean>
+
+    <bean id="beerByIdUriTemplate" class="org.springframework.web.util.UriTemplate">
+        <constructor-arg value="${beerById.template}"/>
+    </bean>
+    <bean id="orderByIdUriTemplate" class="org.springframework.web.util.UriTemplate">
+        <constructor-arg value="${orderById.template}"/>
+    </bean>
+
+    <bean id="soapExecutor" class="com.moro.camel.integration.processor.SoapExecutorProcessor">
+        <constructor-arg ref="orderSoapManager"/>
+        <constructor-arg ref="beerSoapManager"/>
+        <constructor-arg ref="reviewSoapManager"/>
+        <constructor-arg ref="beerByIdUriTemplate"/>
+        <constructor-arg ref="orderByIdUriTemplate"/>
+    </bean>
+    <!-- Routes -->
+    <bean id="camelRestRoute" class="com.moro.camel.integration.rest.CamelRestRoute">
+        <constructor-arg ref="soapExecutor"/>
+    </bean>
+
+
+    <camelContext xmlns="http://camel.apache.org/schema/spring" streamCache="true">
+        <routeBuilder ref="camelRestRoute"/>
+    </camelContext>
+</beans>
